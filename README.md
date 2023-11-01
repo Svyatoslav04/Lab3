@@ -1,73 +1,78 @@
 # Lab3
-#include <iostream>
-#include <cmath>
-#include <string>
+using System;
 
-using namespace std;
+class Point
+{
+    public double X { get; }
+    public double Y { get; }
+    public string Name { get; }
 
-// Клас Point для представлення точки
-class Point {
-public:
-    double x;
-    double y;
-    string name;
+    public Point(double x, double y, string name)
+    {
+        X = x;
+        Y = y;
+        Name = name;
+    }
+}
 
-    Point(double _x, double _y, const string& _name) : x(_x), y(_y), name(_name) {}
+class Figure
+{
+    private Point[] points;
 
-    double GetX() const {
-        return x;
+    public Figure(Point A, Point B, Point C)
+    {
+        points = new Point[] { A, B, C };
     }
 
-    double GetY() const {
-        return y;
+    public Figure(Point A, Point B, Point C, Point D)
+    {
+        points = new Point[] { A, B, C, D };
     }
 
-    string GetName() const {
-        return name;
-    }
-};
-
-// Клас Figure для представлення багатокутника
-class Figure {
-private:
-    Point* points; // Масив точок
-    int count;     // Кількість точок в багатокутнику
-
-public:
-    Figure(Point* _points, int _count) : points(_points), count(_count) {}
-
-    // Розрахунок довжини відрізка між двома точками
-    double GetSideLength(const Point& A, const Point& B) const {
-        return sqrt(pow(A.GetX() - B.GetX(), 2) + pow(A.GetY() - B.GetY(), 2));
+    public Figure(Point A, Point B, Point C, Point D, Point E)
+    {
+        points = new Point[] { A, B, C, D, E };
     }
 
-    // Розрахунок периметра багатокутника
-    double CalculatePerimeter() const {
-        double perimeter = 0.0;
-        for (int i = 0; i < count; i++) {
-            int nextIndex = (i + 1) % count; // Індекс наступної точки (циклічно)
-            perimeter += GetSideLength(points[i], points[nextIndex]);
+    public double GetSideLength(Point A, Point B)
+    {
+        double dx = A.X - B.X;
+        double dy = A.Y - B.Y;
+        return Math.Sqrt(dx * dx + dy * dy);
+    }
+
+    public void CalculatePerimeter()
+    {
+        double perimeter = 0;
+        int n = points.Length;
+
+        for (int i = 0; i < n; i++)
+        {
+            int j = (i + 1) % n;
+            perimeter += GetSideLength(points[i], points[j]);
         }
-        return perimeter;
+
+        Console.WriteLine("Периметр багатокутника: " + perimeter);
     }
-};
+}
 
-int main() {
-    // Визначення точок для багатокутника
-    Point A(0, 0, "A");
-    Point B(4, 0, "B");
-    Point C(4, 3, "C");
-    Point D(0, 3, "D");
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("Введіть координати точки A (x y name):");
+        string[] inputA = Console.ReadLine().Split(' ');
+        Point A = new Point(double.Parse(inputA[0]), double.Parse(inputA[1]), inputA[2]);
 
-    // Масив точок багатокутника
-    Point points[] = {A, B, C, D};
+        Console.WriteLine("Введіть координати точки B (x y name):");
+        string[] inputB = Console.ReadLine().Split(' ');
+        Point B = new Point(double.Parse(inputB[0]), double.Parse(inputB[1]), inputB[2]);
 
-    // Створення екземпляра класу Figure
-    Figure figure(points, sizeof(points) / sizeof(points[0]));
+        Console.WriteLine("Введіть координати точки C (x y name):");
+        string[] inputC = Console.ReadLine().Split(' ');
+        Point C = new Point(double.Parse(inputC[0]), double.Parse(inputC[1]), inputC[2]);
 
-    // Розрахунок та виведення периметра багатокутника
-    double perimeter = figure.CalculatePerimeter();
-    cout << "Периметр багатокутника: " << perimeter << endl;
-
-    return 0;
+        Figure triangle = new Figure(A, B, C);
+        triangle.CalculatePerimeter();
+    }
 }
